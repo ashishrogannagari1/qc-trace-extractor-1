@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QC Sample Summary</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #d9dee7;
+    --header: #182230;
+    --header-text: #ffffff;
+    --accent: #315f8c;
+    --accent-hover: #254d76;
+    --success: #16834b;
+    --warning: #b56b00;
+  }
+
+  body {
+    margin: 0;
+    padding: 34px 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Arial,
+      sans-serif;
+  }
+
+  .page {
+    max-width: 1450px;
+    margin: 0 auto;
+  }
+
+  .top {
+    margin-bottom: 24px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 650;
+    letter-spacing: -0.4px;
+  }
+
+  .subtitle {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.045);
+  }
+
+  .input-card {
+    padding: 20px;
+  }
+
+  .label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
+  }
+
+  textarea {
+    width: 100%;
+    height: 250px;
+    padding: 14px;
+    resize: vertical;
+
+    border: 1px solid #cbd2dc;
+    border-radius: 8px;
+
+    background: #fbfcfd;
+    color: #111827;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+
+    outline: none;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(49,95,140,.10);
+    background: #fff;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  button {
+    border: 1px solid #c7ced8;
+    border-radius: 7px;
+    padding: 9px 15px;
+
+    background: #fff;
+    color: #263241;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: .15s ease;
+  }
+
+  button:hover {
+    background: #f3f5f7;
+  }
+
+  .primary {
+    background: var(--header);
+    border-color: var(--header);
+    color: white;
+  }
+
+  .primary:hover {
+    background: #263342;
+  }
+
+  .success {
+    background: #f1faf5;
+    border-color: #b9e1ca;
+    color: #176b40;
+  }
+
+  .success:hover {
+    background: #e8f6ee;
+  }
+
+  .copy-msg {
+    min-width: 75px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--success);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-top: 15px;
+    padding: 11px 13px;
+
+    border-top: 1px solid #edf0f3;
+
+    font-size: 13px;
+  }
+
+  .status-left {
+    color: var(--muted);
+  }
+
+  .status-right {
+    font-weight: 600;
+  }
+
+  .good {
+    color: var(--success);
+  }
+
+  .warn {
+    color: var(--warning);
+  }
+
+  .output-card {
+    margin-top: 20px;
+    overflow: hidden;
+  }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 15px 18px;
+
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+
+  .output-title {
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 13px;
+  }
+
+  th {
+    padding: 11px 10px;
+    text-align: left;
+
+    background: var(--header);
+    color: var(--header-text);
+
+    border: 1px solid var(--header);
+
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: .25px;
+
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 10px;
+    border: 1px solid #cfd5dc;
+    vertical-align: top;
+    line-height: 1.4;
+  }
+
+  tbody tr:nth-child(even) td {
+    background: #fafbfc;
+  }
+
+  tbody tr:hover td {
+    background: #f3f6f9;
+  }
+
+  .empty {
+    padding: 45px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .source {
+    display: none;
+    margin: 0;
+    padding: 16px;
+
+    background: #101820;
+    color: #d9e2ec;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.55;
+
+    white-space: pre-wrap;
+    overflow-x: auto;
+    max-height: 450px;
+  }
+
+  .source.show {
+    display: block;
+  }
+
+  .small {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 700px) {
+    body {
+      padding: 20px 12px;
+    }
+
+    .title {
+      font-size: 23px;
+    }
+
+    .input-card {
+      padding: 14px;
+    }
+
+    .status {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="top">
+    <h1 class="title">QC Sample Summary</h1>
+    <p class="subtitle">
+      Paste received sample information and extract the five required QC fields.
+    </p>
+  </div>
+
+
+  <!-- INPUT -->
+  <div class="card input-card">
+
+    <label class="label" for="rawText">
+      Received Sample Information
+    </label>
+
+    <textarea
+      id="rawText"
+      placeholder="Paste QC received information here..."
+      spellcheck="false"
+    ></textarea>
+
+    <div class="actions">
+
+      <button
+        class="primary"
+        onclick="buildSummary()"
+      >
+        Extract Table
+      </button>
+
+      <button
+        class="success"
+        onclick="copySummary()"
+      >
+        Copy for Outlook
+      </button>
+
+      <button
+        onclick="toggleSource()"
+      >
+        Show Source
+      </button>
+
+      <button
+        onclick="clearPage()"
+      >
+        Clear
+      </button>
+
+      <span
+        id="copyMsg"
+        class="copy-msg"
+      ></span>
+
+    </div>
+
+
+    <div class="status">
+
+      <div
+        id="statusLeft"
+        class="status-left"
+      >
+        Ready
+      </div>
+
+      <div
+        id="statusRight"
+        class="status-right"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- OUTPUT -->
+  <div class="card output-card">
+
+    <div class="output-header">
+
+      <div class="output-title">
+        QC Summary
+      </div>
+
+      <div
+        id="rowCount"
+        class="small"
+      ></div>
+
+    </div>
+
+    <div
+      id="summary"
+      class="table-wrap"
+    >
+      <div class="empty">
+        Paste your QC information above to generate the table.
+      </div>
+    </div>
+
+    <pre
+      id="source"
+      class="source"
+    ></pre>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const rawText = document.getElementById("rawText");
+const summary = document.getElementById("summary");
+const copyMsg = document.getElementById("copyMsg");
+const statusLeft = document.getElementById("statusLeft");
+const statusRight = document.getElementById("statusRight");
+const rowCount = document.getElementById("rowCount");
+const source = document.getElementById("source");
+
+
+/* =========================================================
+   AUTO EXTRACT WHEN PASTING / TYPING
+   ========================================================= */
+
+rawText.addEventListener("input", function () {
+
+  if (rawText.value.trim()) {
+    buildSummary();
+  } else {
+    resetOutput();
+  }
+
+});
+
+rawText.addEventListener("paste", function () {
+
+  setTimeout(function () {
+    buildSummary();
+  }, 80);
+
+});
+
+
+/* =========================================================
+   MAIN PARSER
+   ========================================================= */
+
+function buildSummary() {
+
+  const original = rawText.value.trim();
+
+  if (!original) {
+    resetOutput();
+    return;
+  }
+
+  const normalized = normalizeText(original);
+
+  /*
+    Find every QC TRACE.
+
+    Example:
+    QR2605000HT7
+    QR2605000HHE
+    QR2605000HLB
+  */
+
+  const qrRegex = /QR[A-Z0-9]+/gi;
+
+  const matches = [];
+  let match;
+
+  while ((match = qrRegex.exec(normalized)) !== null) {
+    matches.push({
+      value: match[0],
+      index: match.index
+    });
+  }
+
+
+  if (!matches.length) {
+
+    summary.innerHTML = `
+      <div class="empty">
+        No QC Trace numbers were found.
+      </div>
+    `;
+
+    statusLeft.textContent = "No QC Trace numbers found";
+    statusRight.textContent = "";
+    rowCount.textContent = "";
+
+    return;
+  }
+
+
+  const records = [];
+
+
+  /*
+    Split the entire pasted data into individual
+    QC Trace blocks.
+  */
+
+  for (let i = 0; i < matches.length; i++) {
+
+    const start = matches[i].index;
+
+    const end =
+      i + 1 < matches.length
+        ? matches[i + 1].index
+        : normalized.length;
+
+    const block = normalized
+      .substring(start, end)
+      .trim();
+
+
+    const record = parseBlock(
+      matches[i].value,
+      block
+    );
+
+
+    records.push(record);
+  }
+
+
+  renderTable(records);
+
+
+  /*
+    Integrity check
+  */
+
+  const found = matches.length;
+  const parsed = records.length;
+
+  rowCount.textContent =
+    parsed + (parsed === 1 ? " row" : " rows");
+
+
+  if (found === parsed) {
+
+    statusLeft.textContent =
+      "All QC Trace records extracted";
+
+    statusRight.textContent =
+      "✓ " + parsed + " records";
+
+    statusRight.className =
+      "status-right good";
+
+  } else {
+
+    statusLeft.textContent =
+      "Please review the extracted records";
+
+    statusRight.textContent =
+      found + " found / " + parsed + " parsed";
+
+    statusRight.className =
+      "status-right warn";
+  }
+
+}
+
+
+/* =========================================================
+   PARSE ONE QC BLOCK
+   ========================================================= */
+
+function parseBlock(qcTrace, block) {
+
+  let material = "";
+  let quantity = "";
+  let supplier = "";
+  let vendorLot = "";
+
+
+  /*
+    Remove QC Trace from the beginning.
+  */
+
+  let text = block
+    .replace(
+      new RegExp("^" + escapeRegex(qcTrace)),
+      ""
+    )
+    .trim();
+
+
+  /*
+    ---------------------------------------------------------
+    MATERIAL
+    ---------------------------------------------------------
+
+    Material starts with something like:
+
+    CMLIQ0000014 - Ethanol PS-663 200
+
+    or
+
+    FRPOW00005T7 - Apple Pectin Powder (Malus spp) 20 Units
+
+    It ends before:
+      20 Units
+      500.0 (KG)
+      110.0 (GAL)
+  */
+
+  const materialMatch = text.match(
+    /([A-Z0-9]+)\s*-\s*(.*?)(?=\s+\d+\s+Units?\b|\s+[\d,]+(?:\.\d+)?\s*\([A-Za-z]+\))/i
+  );
+
+
+  if (materialMatch) {
+
+    material =
+      materialMatch[1].trim() +
+      " - " +
+      materialMatch[2].trim();
+
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    RECEIVED QUANTITY
+    ---------------------------------------------------------
+
+    We only want:
+
+    110.0 (GAL)
+    20.0 (KG)
+    7,820.0 (PCS)
+
+    NOT:
+
+    2 Units
+    20 Units
+  */
+
+  const quantityMatch = text.match(
+    /[\d,]+(?:\.\d+)?\s*\([A-Za-z]+\)/i
+  );
+
+
+  if (quantityMatch) {
+    quantity = quantityMatch[0].trim();
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    SUPPLIER
+    ---------------------------------------------------------
+
+    Supplier appears immediately after received quantity.
+
+    Example:
+
+    500.0 (KG) Suntec Inc. 202605200021 ...
+  */
+
+  if (quantity) {
+
+    const quantityIndex =
+      text.indexOf(quantity);
+
+
+    if (quantityIndex !== -1) {
+
+      let afterQuantity =
+        text
+          .substring(
+            quantityIndex + quantity.length
+          )
+          .trim();
+
+
+      /*
+        Supplier ends before:
+        - Supplier Order
+        - AR number
+        - BP number
+        - Scan date
+      */
+
+      const supplierMatch =
+        afterQuantity.match(
+          /^(.*?)(?=\s+(?:BP\d+|\d{12})\b|\s+\d{4}\/\d{2}\/\d{2}\b|$)/i
+        );
+
+
+      if (supplierMatch) {
+
+        supplier =
+          supplierMatch[1].trim();
+
+      }
+    }
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    FALLBACK SUPPLIER
+    ---------------------------------------------------------
+
+    If the first method didn't find it, inspect
+    individual pieces around the quantity.
+  */
+
+  if (!supplier) {
+
+    const parts =
+      text.split(/\s+/);
+
+    const quantityIndex =
+      parts.findIndex(part =>
+        /[\d,]+(?:\.\d+)?\s*\([A-Za-z]+\)/i.test(part)
+      );
+
+
+    if (
+      quantityIndex !== -1 &&
+      parts[quantityIndex + 1]
+    ) {
+
+      let possibleSupplier =
+        parts
+          .slice(quantityIndex + 1)
+          .join(" ");
+
+
+      possibleSupplier =
+        possibleSupplier.split(
+          /\s+(?:BP\d+|\d{12})\b/i
+        )[0];
+
+
+      supplier =
+        possibleSupplier
+          .replace(
+            /\s+\d{4}\/\d{2}\/\d{2}.*/i,
+            ""
+          )
+          .trim();
+    }
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    VENDOR LOT
+    ---------------------------------------------------------
+
+    Scan Date is our strongest anchor.
+
+    Example:
+
+    2026/05/27 17:05:18 13093-05
+
+    Vendor Lot = 13093-05
+
+    If Notes follow it:
+
+    13093-05 Clear colorless liquid
+
+    we only keep:
+
+    13093-05
+  */
+
+  const scanMatch =
+    text.match(
+      /\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2}\s+(.+)$/i
+    );
+
+
+  if (scanMatch) {
+
+    let afterScan =
+      scanMatch[1].trim();
+
+    vendorLot =
+      extractVendorLot(afterScan);
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    FALLBACK FOR DATE / LOT ON SEPARATE LINES
+    ---------------------------------------------------------
+  */
+
+  if (!vendorLot) {
+
+    const dateMatch =
+      text.match(
+        /\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2}/
+      );
+
+
+    if (dateMatch) {
+
+      const afterDate =
+        text.substring(
+          dateMatch.index +
+          dateMatch[0].length
+        ).trim();
+
+
+      if (afterDate) {
+
+        vendorLot =
+          extractVendorLot(afterDate);
+      }
+    }
+  }
+
+
+  /*
+    ---------------------------------------------------------
+    CLEANUP
+    ---------------------------------------------------------
+  */
+
+  material = cleanField(material);
+  quantity = cleanField(quantity);
+  supplier = cleanField(supplier);
+  vendorLot = cleanField(vendorLot);
+
+
+  return {
+    qcTrace,
+    material,
+    quantity,
+    supplier,
+    vendorLot
+  };
+
+}
+
+
+/* =========================================================
+   VENDOR LOT PARSER
+   ========================================================= */
+
+function extractVendorLot(value) {
+
+  let lot = value.trim();
+
+
+  /*
+    First token is normally the vendor lot.
+
+    Examples:
+
+    13093-05
+    NJ109642-1SA
+    RAF01-2510004
+    CN26000002
+    05/18/2026
+    042826 NTRMLT
+  */
+
+
+  /*
+    Special case:
+    Date-style vendor lots.
+
+    Example:
+    05/18/2026
+    05/15/2026
+  */
+
+  const dateLot =
+    lot.match(
+      /^\d{1,2}\/\d{1,2}\/\d{4}\b/
+    );
+
+  if (dateLot) {
+    return dateLot[0];
+  }
+
+
+  /*
+    Known note phrases.
+    Remove anything after them.
+  */
+
+  const notePatterns = [
+
+    /\s+Clear\s+colorless\s+liquid.*$/i,
+
+    /\s+White\s+crystalline\s+Powder.*$/i,
+
+    /\s+White\s+crystalline\s+powder.*$/i,
+
+    /\s+White\s+granular\s+Powder.*$/i,
+
+    /\s+White\s+granular\s+powder.*$/i,
+
+    /\s+LOOKS\s+LIKE\s+WHITE\s+PWD.*$/i,
+
+    /\s+Tannish\s+Brown\s+Powder.*$/i,
+
+    /\s+Tannish\s+brown\s+powder.*$/i,
+
+    /\s+Light\s+Pink\s+crystalline\s+powder.*$/i,
+
+    /\s+Light\s+Pink\s+crystalline\s+Powder.*$/i,
+
+    /\s+NO\s+MFG.*$/i
+  ];
+
+
+  notePatterns.forEach(pattern => {
+    lot = lot.replace(pattern, "");
+  });
+
+
+  /*
+    If nothing matched, use the first token.
+
+    This prevents:
+
+    CN26000002 LOOKS LIKE WHITE PWD
+
+    from becoming the entire vendor lot.
+
+    But preserve vendor lots such as:
+
+    042826 NTRMLT
+    */
+
+  if (
+    /\s/.test(lot) &&
+    !/^\d{6,8}\s+[A-Z0-9-]+$/i.test(lot)
+  ) {
+
+    /*
+      Common single-token vendor lot patterns.
+    */
+
+    const tokenMatch =
+      lot.match(
+        /^[A-Z0-9][A-Z0-9._\/-]*/i
+      );
+
+    if (tokenMatch) {
+      lot = tokenMatch[0];
+    }
+  }
+
+
+  return lot.trim();
+}
+
+
+/* =========================================================
+   NORMALIZE PASTED TEXT
+   ========================================================= */
+
+function normalizeText(text) {
+
+  return text
+    .replace(/\u00A0/g, " ")
+    .replace(/\u2000/g, " ")
+    .replace(/\u2001/g, " ")
+    .replace(/\u2002/g, " ")
+    .replace(/\u2003/g, " ")
+    .replace(/\u2004/g, " ")
+    .replace(/\u2005/g, " ")
+    .replace(/\u2006/g, " ")
+    .replace(/\u2007/g, " ")
+    .replace(/\u2008/g, " ")
+    .replace(/\u2009/g, " ")
+    .replace(/\u200A/g, " ")
+    .replace(/\u202F/g, " ")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+/* =========================================================
+   RENDER TABLE
+   ========================================================= */
+
+function renderTable(records) {
+
+  let html = `
+    <table id="sampleTable">
+
+      <thead>
+        <tr>
+          <th>QC TRACE</th>
+          <th>MATERIAL</th>
+          <th>RECEIVED QUANTITY</th>
+          <th>SUPPLIER</th>
+          <th>VENDOR LOT</th>
+        </tr>
+      </thead>
+
+      <tbody>
+  `;
+
+
+  records.forEach(record => {
+
+    html += `
+      <tr>
+        <td>${escapeHTML(record.qcTrace)}</td>
+        <td>${escapeHTML(record.material)}</td>
+        <td>${escapeHTML(record.quantity)}</td>
+        <td>${escapeHTML(record.supplier)}</td>
+        <td>${escapeHTML(record.vendorLot)}</td>
+      </tr>
+    `;
+
+  });
+
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+
+  summary.innerHTML = html;
+}
+
+
+/* =========================================================
+   COPY FOR OUTLOOK
+   ========================================================= */
+
+async function copySummary() {
+
+  const table =
+    document.getElementById("sampleTable");
+
+
+  if (!table) {
+
+    showMessage("Nothing to copy");
+
+    return;
+  }
+
+
+  /*
+    Create a clean standalone table specifically
+    for email clients.
+  */
+
+  const emailTable =
+    table.cloneNode(true);
+
+
+  emailTable.style.borderCollapse =
+    "collapse";
+
+  emailTable.style.width =
+    "100%";
+
+  emailTable.style.fontFamily =
+    "Arial, sans-serif";
+
+  emailTable.style.fontSize =
+    "13px";
+
+
+  const cells =
+    emailTable.querySelectorAll(
+      "th, td"
+    );
+
+
+  cells.forEach(cell => {
+
+    cell.style.border =
+      "1px solid #333";
+
+    cell.style.padding =
+      "8px";
+
+    cell.style.textAlign =
+      "left";
+
+    cell.style.verticalAlign =
+      "top";
+  });
+
+
+  const headers =
+    emailTable.querySelectorAll("th");
+
+
+  headers.forEach(header => {
+
+    header.style.backgroundColor =
+      "#e6eef7";
+
+    header.style.color =
+      "#111";
+
+    header.style.fontWeight =
+      "bold";
+  });
+
+
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.appendChild(emailTable);
+
+
+  const html =
+    wrapper.innerHTML;
+
+
+  /*
+    Plain-text fallback.
+  */
+
+  const temp =
+    document.createElement("div");
+
+  temp.innerHTML = html;
+
+
+  const plainText =
+    temp.innerText;
+
+
+  try {
+
+    if (
+      navigator.clipboard &&
+      window.ClipboardItem
+    ) {
+
+      const item =
+        new ClipboardItem({
+
+          "text/html":
+            new Blob(
+              [html],
+              { type: "text/html" }
+            ),
+
+          "text/plain":
+            new Blob(
+              [plainText],
+              { type: "text/plain" }
+            )
+        });
+
+
+      await navigator.clipboard.write([
+        item
+      ]);
+
+    } else {
+
+      copyUsingSelection(emailTable);
+    }
+
+
+    showMessage("Copied ✓");
+
+  } catch (error) {
+
+    copyUsingSelection(emailTable);
+
+    showMessage("Copied ✓");
+  }
+
+}
+
+
+/* =========================================================
+   FALLBACK COPY
+   ========================================================= */
+
+function copyUsingSelection(element) {
+
+  document.body.appendChild(element);
+
+  const range =
+    document.createRange();
+
+  range.selectNode(element);
+
+
+  const selection =
+    window.getSelection();
+
+  selection.removeAllRanges();
+
+  selection.addRange(range);
+
+
+  document.execCommand("copy");
+
+
+  selection.removeAllRanges();
+
+  element.remove();
+}
+
+
+/* =========================================================
+   SOURCE VIEW
+   ========================================================= */
+
+function toggleSource() {
+
+  if (
+    source.classList.contains("show")
+  ) {
+
+    source.classList.remove("show");
+
+  } else {
+
+    source.textContent =
+      rawText.value;
+
+    source.classList.add("show");
+  }
+
+}
+
+
+/* =========================================================
+   CLEAR
+   ========================================================= */
+
+function clearPage() {
+
+  rawText.value = "";
+
+  summary.innerHTML = `
+    <div class="empty">
+      Paste your QC information above to generate the table.
+    </div>
+  `;
+
+  source.textContent = "";
+
+  source.classList.remove("show");
+
+  rowCount.textContent = "";
+
+  statusLeft.textContent =
+    "Ready";
+
+  statusRight.textContent = "";
+
+  copyMsg.textContent = "";
+}
+
+
+/* =========================================================
+   RESET OUTPUT
+   ========================================================= */
+
+function resetOutput() {
+
+  summary.innerHTML = `
+    <div class="empty">
+      Paste your QC information above to generate the table.
+    </div>
+  `;
+
+  rowCount.textContent = "";
+
+  statusLeft.textContent =
+    "Ready";
+
+  statusRight.textContent = "";
+
+  copyMsg.textContent = "";
+}
+
+
+/* =========================================================
+   SMALL HELPERS
+   ========================================================= */
+
+function cleanField(value) {
+
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function escapeRegex(value) {
+
+  return value.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+resetOutput();
+
+</script>
+
+</body>
+</html>
